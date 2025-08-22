@@ -35,14 +35,11 @@
         margin: 0 0 5px;
         padding: 0;
     }
-
 }
 
 @media (min-width: 371px) and (max-width: 1300px) {}
 
 @media (min-width: 576px) and (max-width: 1300px) {
-
-
     .popup .box {
         width: 350px;
         height: 350px;
@@ -54,7 +51,6 @@
 }
 
 @media (min-width: 768px) and (max-width: 1300px) {
-
     .popup .box {
         width: 400px;
         height: 400px;
@@ -70,12 +66,9 @@
     .popup .box .indicators ul {
         margin: 0 auto;
     }
-
 }
 
 @media (min-width: 992px) and (max-width: 1300px) {
-
-
     .popup .box i.close {
         top: 20px;
         right: 20px;
@@ -90,8 +83,6 @@
         top: 50%;
         left: 20px;
     }
-
-
 
     .popup .box {
         width: 500px;
