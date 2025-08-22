@@ -1,0 +1,143 @@
+:root {
+    --golden-color: #f9ec31;
+}
+
+body {
+    background: #0F2027;
+    background: -webkit-linear-gradient(to right, #2C5364, #203A43, #0F2027);
+    background: linear-gradient(to right, #2C5364, #203A43, #0F2027);
+}
+
+#Gallery .item {
+    width: 250px;
+    height: 250px;
+    margin: 0 auto;
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#Gallery .item img {
+    transition-duration: .5s;
+}
+
+#Gallery .item:hover img {
+    transform: scale(1.2);
+}
+
+#Gallery .item .layout {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .5);
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition-duration: .5s;
+}
+
+#Gallery .item:hover .layout {
+    opacity: 1;
+}
+
+#Gallery .item .layout i {
+    font-size: 30px;
+    color: #fff;
+    transition-duration: 0.5s;
+    cursor: pointer;
+}
+
+#Gallery .item .layout i:hover {
+    color: var(--golden-color);
+    transform: rotate(180deg);
+}
+
+.popup {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(to right, rgba(44, 83, 100, .5), rgba(32, 58, 67, .5), rgba(15, 32, 39, .5));
+    opacity: 0;
+    z-index: -1;
+    transition-duration: 0.5s;
+}
+
+.popup.show {
+    opacity: 1;
+    z-index: 1;
+}
+
+.popup .box {
+    width: 500px;
+    height: 500px;
+    position: relative;
+}
+
+.popup img {
+    border-radius: 10px;
+}
+
+.popup .box i,
+.popup .box li {
+    width: 30px;
+    height: 30px;
+    background: #0F2027;
+    background: -webkit-linear-gradient(to right, #2C5364, #203A43, #0F2027);
+    background: linear-gradient(to right, #2C5364, #203A43, #0F2027);
+    color: var(--golden-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100%;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.popup .box i.close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.popup .box i.right {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+}
+
+.popup .box i.left {
+    position: absolute;
+    top: 50%;
+    left: 20px;
+    transform: translateY(-50%);
+}
+
+.popup .box .indicators {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    width: 90%;
+    transform: translateX(-50%);
+    overflow: auto;
+}
+
+.popup .box .indicators ul {
+    margin: 0 auto;
+    list-style: none;
+    width: fit-content;
+    display: flex;
+    padding: 0;
+}
+
+.popup .box .indicators li.active {
+    background: #fff;
+}
