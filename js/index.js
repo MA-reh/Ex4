@@ -5,7 +5,8 @@ let popUpEle = document.querySelector("#popup"),
   currentImgIndex,
   popUpNext = popUpEle.querySelector(".right"),
   popUpLeft = popUpEle.querySelector(".left"),
-  allImagesGallery = document.querySelectorAll("#Gallery img.img-fluid");
+  allImagesGallery = document.querySelectorAll("#Gallery img.img-fluid"),
+  popUpBox = popUpEle.querySelector(".box");
 
 //   call one time => invoke function
 (function createIndicators() {
@@ -13,6 +14,7 @@ let popUpEle = document.querySelector("#popup"),
   //   create indicator for number of images
   allImagesGallery.forEach(function () {
     let newIndicator = document.createElement("li");
+
     newIndicator.className =
       counter == allImagesGallery.length - 1
         ? " "
@@ -25,11 +27,17 @@ let popUpEle = document.querySelector("#popup"),
   });
 })();
 
-let popUpIndicators = popUpEle.querySelectorAll("li");
+let popUpIndicators = popUpEle.querySelectorAll("li"),
+  indexArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-// open and close popUp by class show
-function togglePopUp() {
-  popUpEle.classList.toggle("show");
+// add attribute data-index in html for li
+for (let indexImg of indexArray) {
+  popUpIndicators[indexImg - 1].setAttribute("data-index", indexImg);
+}
+
+// open popUp by class show
+function addPopUp() {
+  popUpEle.classList.add("show");
 }
 
 // only close popUp
@@ -48,8 +56,39 @@ function updateImgScr(newSrc) {
   popUpImg.setAttribute("src", newSrc);
 }
 
+// all control of popUpBox
 function keysPopUpIndicators(e) {
   let keysArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  for (let key of keysArray) {
+    popUpIndicators[key - 1];
+    if (e.key == key) {
+      // if user click on indicator active => start animation scale for image
+      if (popUpIndicators[key - 1].classList.contains("active")) {
+        // start animation
+        popUpBox.classList.add("scale-box");
+        // if animation end remove class animation
+        popUpBox.addEventListener("animationend", () => {
+          popUpBox.classList.remove("scale-box");
+        });
+
+        return;
+      }
+
+      // if user click on any number indicator => image change to number clicked
+      currentImgIndex = Array.from(popUpIndicators).indexOf(
+        popUpIndicators[key - 1]
+      );
+
+      // take src from image index and set in New variable
+      currentImgSrc = allImagesGallery[currentImgIndex].getAttribute("src");
+
+      // call back functions
+      updateImgScr(currentImgSrc);
+      updateIndicator();
+      addPopUp();
+    }
+  }
+
   //  check if popUpElement is has class show
   if (popUpEle.classList == "popup show") {
     // if user click ESC in keyBoard => close popUp
@@ -61,7 +100,7 @@ function keysPopUpIndicators(e) {
       currentImgIndex =
         currentImgIndex >= allImagesGallery.length - 1 ? 0 : ++currentImgIndex;
       let nextImgSrc = allImagesGallery[currentImgIndex].getAttribute("src");
-      //   call back function
+      //   call back functions
       updateImgScr(nextImgSrc);
       updateIndicator();
     }
@@ -71,66 +110,68 @@ function keysPopUpIndicators(e) {
         currentImgIndex <= 0 ? allImagesGallery.length - 1 : --currentImgIndex;
       let prevImgSrc = allImagesGallery[currentImgIndex].getAttribute("src");
 
-      //   call back function
+      //   call back functions
       updateImgScr(prevImgSrc);
       updateIndicator();
     }
 
-    for (let key of keysArray) {
-      // click Numbers 1 to number images in keyBoard => change image to number user click there
-      if (e.key == key) {
-        for (let i = 1; i <= allImagesGallery.length; ++i) {
-          if (e.code == "Digit" + i || e.code == "Numpad" + i) {
-            currentImgIndex = i - 1;
-            let indexImgSrc =
-              allImagesGallery[currentImgIndex].getAttribute("src");
-
-            // call back function
-            updateImgScr(indexImgSrc);
-            updateIndicator();
-            return;
-          }
-        }
-      }
-    }
+    // all Keys not have any action have animation // try that
     if (
       !(
-        e.key == keysArray ||
+        e.key == 1 ||
+        e.key == 2 ||
+        e.key == 3 ||
+        e.key == 4 ||
+        e.key == 5 ||
+        e.key == 6 ||
+        e.key == 7 ||
+        e.key == 8 ||
+        e.key == 9 ||
         e.key == "ArrowRight" ||
         e.key == "ArrowLeft" ||
         e.code == "Escape"
       )
     ) {
-      popUpEle.querySelector(".box").classList.add("animation");
-      popUpEle.querySelector(".box").addEventListener("animationend", (e) => {
-        popUpEle.querySelector(".box").classList.remove("animation");
+      popUpBox.classList.add("animation");
+      popUpBox.addEventListener("animationend", (e) => {
+        popUpBox.classList.remove("animation");
       });
       return;
     }
   }
 }
 
+// if user click any key in Keyboard he is have active // try it too see
+window.addEventListener("keyup", keysPopUpIndicators);
+
+// click any place in screen => close the popUpElement
 popUpEle.addEventListener("click", removePopUp);
+
+// button X in popUpBox => close the popUpElement
 popUpClose.addEventListener("click", removePopUp);
 
 // buttons layOut up image in Section Gallery
 popUpKeys.forEach((popUpKey) => {
   // know any button his clicked because open popUp with image this button
   popUpKey.addEventListener("click", function () {
+    // take src image at button clicked there in New variable
     currentImgSrc =
       popUpKey.parentElement.previousElementSibling.getAttribute("src");
+
+    // replace old imageSrc in place NewImageSrc
     popUpImg.setAttribute("src", currentImgSrc);
+
     currentImgIndex =
       popUpKey.parentElement.previousElementSibling.dataset.index;
 
-    //   call back function
+    //   call back functions
     updateIndicator();
-    togglePopUp();
+    addPopUp();
   });
 });
 
 // if user click on box popUp doesn't close popUpElement
-popUpEle.querySelector(".box").addEventListener("click", (e) => {
+popUpBox.addEventListener("click", (e) => {
   e.stopPropagation();
 });
 
@@ -138,33 +179,53 @@ popUpEle.querySelector(".box").addEventListener("click", (e) => {
 popUpNext.addEventListener("click", () => {
   currentImgIndex =
     currentImgIndex >= allImagesGallery.length - 1 ? 0 : ++currentImgIndex;
+
+  // take src next image in New variable
   let nextImgSrc = allImagesGallery[currentImgIndex].getAttribute("src");
 
-  //   call back function
+  //   call back functions
   updateImgScr(nextImgSrc);
   updateIndicator();
 });
-
-window.addEventListener("keyup", keysPopUpIndicators);
 
 // click button pervious in popUp => change before image
 popUpLeft.addEventListener("click", () => {
   currentImgIndex =
     currentImgIndex <= 0 ? allImagesGallery.length - 1 : --currentImgIndex;
+
+  // take src pervious image in New variable
   let prevImgSrc = allImagesGallery[currentImgIndex].getAttribute("src");
 
-  //   call back function
+  //   call back functions
   updateImgScr(prevImgSrc);
   updateIndicator();
 });
 
+// indicators li in popUpBox
 popUpIndicators.forEach((popUpIndicator) => {
+  // if user click on indicator active => start animation scale for image
+  popUpIndicator.addEventListener("click", () => {
+    // check if indicator has class active or not // is have ? start animation
+    if (popUpIndicator.classList.contains("active")) {
+      // start animation
+      popUpBox.classList.add("scale-box");
+      // if animation end remove class animation
+      popUpBox.addEventListener("animationend", () => {
+        popUpBox.classList.remove("scale-box");
+      });
+    }
+    return;
+  });
+
   // if user click on any number indicator => image change to number clicked
   popUpIndicator.addEventListener("click", () => {
+    // take number "popUpIndicator" of index in array "popUpIndicators" and set in New variable
     currentImgIndex = Array.from(popUpIndicators).indexOf(popUpIndicator);
+
+    // take src from image index and set in New variable
     currentImgSrc = allImagesGallery[currentImgIndex].getAttribute("src");
 
-    //   call back function
+    // call back functions
     updateImgScr(currentImgSrc);
     updateIndicator();
   });
@@ -196,7 +257,3 @@ document.addEventListener("keydown", (e) => {
   }
 });
  */
-
-// document.querySelector("button.sos").addEventListener("click", (e) => {
-//   popUpEle.querySelector(".box").classList.toggle("animation");
-// });
