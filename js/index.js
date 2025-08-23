@@ -5,7 +5,7 @@ let popUpEle = document.querySelector("#popup"),
   currentImgIndex,
   popUpNext = popUpEle.querySelector(".right"),
   popUpLeft = popUpEle.querySelector(".left"),
-  allImagesGallery = document.querySelectorAll("#Gallery img");
+  allImagesGallery = document.querySelectorAll("#Gallery img.img-fluid");
 
 //   call one time => invoke function
 (function createIndicators() {
@@ -48,28 +48,23 @@ function updateImgScr(newSrc) {
   popUpImg.setAttribute("src", newSrc);
 }
 
-// click ArrowRight in keyboard && opened a popUpElement
-function popUpArrowRight(e) {
+function keysPopUpIndicators(e) {
+  let keysArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   //  check if popUpElement is has class show
   if (popUpEle.classList == "popup show") {
+    // if user click ESC in keyBoard => close popUp
+    if (e.code == "Escape") {
+      popUpEle.classList.remove("show");
+    }
     // if user click arrowRight in keyBoard => change next img
     if (e.code == "ArrowRight") {
       currentImgIndex =
         currentImgIndex >= allImagesGallery.length - 1 ? 0 : ++currentImgIndex;
-
       let nextImgSrc = allImagesGallery[currentImgIndex].getAttribute("src");
-
       //   call back function
       updateImgScr(nextImgSrc);
       updateIndicator();
     }
-  }
-}
-
-// click ArrowLeft in keyboard && opened a popUpElement
-function popUpArrowLeft(e) {
-  //  check if popUpElement is has class show
-  if (popUpEle.classList == "popup show") {
     // if user click arrowRight in keyBoard => change pervious img
     if (e.code == "ArrowLeft") {
       currentImgIndex =
@@ -80,33 +75,37 @@ function popUpArrowLeft(e) {
       updateImgScr(prevImgSrc);
       updateIndicator();
     }
-  }
-}
 
-// click ESC in keyBoard => close popUp
-function closePopUpByKey(e) {
-  //  check if popUpElement is has class show
-  if (popUpEle.classList == "popup show") {
-    // if user click ESC in keyBoard => close popUp
-    if (e.code == "Escape") {
-      popUpEle.classList.remove("show");
-    }
-  }
-}
+    for (let key of keysArray) {
+      // click Numbers 1 to number images in keyBoard => change image to number user click there
+      if (e.key == key) {
+        for (let i = 1; i <= allImagesGallery.length; ++i) {
+          if (e.code == "Digit" + i || e.code == "Numpad" + i) {
+            currentImgIndex = i - 1;
+            let indexImgSrc =
+              allImagesGallery[currentImgIndex].getAttribute("src");
 
-// click Numbers 1 to number images in keyBoard => change image to number user click there
-function numberPopUpIndicators(e) {
-  //  check if popUpElement is has class show
-  if (popUpEle.classList == "popup show") {
-    for (let i = 1; i <= allImagesGallery.length; ++i) {
-      if (e.code == "Digit" + i) {
-        currentImgIndex = i - 1;
-        let indexImgSrc = allImagesGallery[currentImgIndex].getAttribute("src");
-
-        // call back function
-        updateImgScr(indexImgSrc);
-        updateIndicator();
+            // call back function
+            updateImgScr(indexImgSrc);
+            updateIndicator();
+            return;
+          }
+        }
       }
+    }
+    if (
+      !(
+        e.key == keysArray ||
+        e.key == "ArrowRight" ||
+        e.key == "ArrowLeft" ||
+        e.code == "Escape"
+      )
+    ) {
+      popUpEle.querySelector(".box").classList.add("animation");
+      popUpEle.querySelector(".box").addEventListener("animationend", (e) => {
+        popUpEle.querySelector(".box").classList.remove("animation");
+      });
+      return;
     }
   }
 }
@@ -146,13 +145,7 @@ popUpNext.addEventListener("click", () => {
   updateIndicator();
 });
 
-window.addEventListener("keyup", popUpArrowRight);
-
-window.addEventListener("keyup", popUpArrowLeft);
-
-window.addEventListener("keyup", closePopUpByKey);
-
-window.addEventListener("keydown", numberPopUpIndicators);
+window.addEventListener("keyup", keysPopUpIndicators);
 
 // click button pervious in popUp => change before image
 popUpLeft.addEventListener("click", () => {
@@ -176,3 +169,34 @@ popUpIndicators.forEach((popUpIndicator) => {
     updateIndicator();
   });
 });
+
+/* 
+let jana = "",
+  sequenceTimer = "";
+
+document.addEventListener("keydown", (e) => {
+  if (e.code.startsWith("Digit")) {
+    jana += e.code.charAt(e.code.length - 1);
+    clearTimeout(sequenceTimer);
+    sequenceTimer = setTimeout(() => {
+      jana = "";
+    }, 1000);
+    if (jana.length === 2) {
+      let targetIndex = parseInt(jana) - 1;
+      if (targetIndex >= 0 && targetIndex < allImagesGallery.length) {
+        currentImgIndex = targetIndex;
+
+        let NewSrc = allImagesGallery[currentImgIndex].getAttribute("src");
+        updateImgScr(NewSrc);
+      }
+      jana = "";
+      sequenceTimer = "";
+      updateIndicator();
+    }
+  }
+});
+ */
+
+// document.querySelector("button.sos").addEventListener("click", (e) => {
+//   popUpEle.querySelector(".box").classList.toggle("animation");
+// });
