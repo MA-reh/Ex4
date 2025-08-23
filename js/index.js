@@ -63,7 +63,10 @@ function keysPopUpIndicators(e) {
     popUpIndicators[key - 1];
     if (e.key == key) {
       // if user click on indicator active => start animation scale for image
-      if (popUpIndicators[key - 1].classList.contains("active")) {
+      if (
+        popUpIndicators[key - 1].classList.contains("active") &&
+        popUpEle.classList.contains("show")
+      ) {
         // start animation
         popUpBox.classList.add("scale-box");
         // if animation end remove class animation
@@ -83,9 +86,9 @@ function keysPopUpIndicators(e) {
       currentImgSrc = allImagesGallery[currentImgIndex].getAttribute("src");
 
       // call back functions
+      addPopUp();
       updateImgScr(currentImgSrc);
       updateIndicator();
-      addPopUp();
     }
   }
 
@@ -118,15 +121,7 @@ function keysPopUpIndicators(e) {
     // all Keys not have any action have animation // try that
     if (
       !(
-        e.key == 1 ||
-        e.key == 2 ||
-        e.key == 3 ||
-        e.key == 4 ||
-        e.key == 5 ||
-        e.key == 6 ||
-        e.key == 7 ||
-        e.key == 8 ||
-        e.key == 9 ||
+        (1 <= e.key && e.key <= 9) ||
         e.key == "ArrowRight" ||
         e.key == "ArrowLeft" ||
         e.code == "Escape"
